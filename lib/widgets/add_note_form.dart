@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:note_app/cubits/add_note_cubits.dart/add_note_cubit.dart';
+import 'package:note_app/model/note_model.dart';
 
 import 'custom_button.dart';
 import 'custom_text_fied.dart';
+
 class AddNoteForm extends StatefulWidget {
   const AddNoteForm({
     super.key,
@@ -12,10 +15,9 @@ class AddNoteForm extends StatefulWidget {
   State<AddNoteForm> createState() => _AddNoteFormState();
 }
 
-final GlobalKey<FormState> formKey = GlobalKey();
+final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
 String? title, subtitle;
-
 
 class _AddNoteFormState extends State<AddNoteForm> {
   @override
@@ -29,10 +31,10 @@ class _AddNoteFormState extends State<AddNoteForm> {
             height: 30,
           ),
           CustomTextField(
-            hint: 'title',
             onSaved: (value) {
               title = value;
             },
+            hint: 'title',
           ),
           const SizedBox(
             height: 16,
@@ -47,13 +49,24 @@ class _AddNoteFormState extends State<AddNoteForm> {
           const SizedBox(
             height: 30,
           ),
-          CustomButton(onTap: () {
-            if (!formKey.currentState!.validate()) {
-              formKey.currentState!.save();
-            } else {
-              autovalidateMode = AutovalidateMode.always;
-            }
-          }),
+          CustomButton(
+            onTap: () {
+              if (formKey.currentState!.validate()) {
+                formKey.currentState!.save();
+
+                var noteModel = NoteModel(
+                  title: title!,
+                  subtitle: subtitle!,
+                  date: DateTime.now().toString(),
+                  color: Colors.black12.value,
+                );
+
+                BlocProvider.of<AddNoteCubit>(context).addNote(noteModel);
+              } else {
+                autovalidateMode = AutovalidateMode.always;
+              }
+            },
+          ),
           const SizedBox(
             height: 16,
           ),
