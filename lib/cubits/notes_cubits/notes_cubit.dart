@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:bloc/bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:meta/meta.dart';
@@ -13,5 +15,6 @@ class NotesCubit extends Cubit<NotesState> {
   fetchnotemethod() {
     var notesbox = Hive.box<NoteModel>(KNoteBox);
     notes = notesbox.values.toList();
+    emit(NotesSuccess());
   }
 }
